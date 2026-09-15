@@ -1,0 +1,29 @@
+meta {
+  name: Validar investigador invalido
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:8080/api/investigadores
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nombreCompleto": "",
+    "correoInstitucional": "correo-invalido",
+    "grupoInvestigacion": ""
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.estado: eq 400
+  res.body.mensaje: eq Datos inválidos en la solicitud
+}

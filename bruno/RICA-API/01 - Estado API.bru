@@ -1,0 +1,17 @@
+meta {
+  name: Estado API
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:8080/api/status
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.proyecto: eq RICA
+  res.body.estado: eq operativo
+}
