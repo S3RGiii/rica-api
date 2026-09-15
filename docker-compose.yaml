@@ -1,0 +1,28 @@
+services:
+  rica-db:
+    image: postgres:16
+    container_name: rica-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: rica
+      POSTGRES_USER: rica
+      POSTGRES_PASSWORD: rica
+    ports:
+      - "5432:5432"
+    volumes:
+      - rica-db-data:/var/lib/postgresql/data
+
+  rica-mongo:
+    image: mongo:7
+    container_name: rica-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: rica
+    ports:
+      - "27017:27017"
+    volumes:
+      - rica-mongo-data:/data/db
+
+volumes:
+  rica-db-data:
+  rica-mongo-data:
