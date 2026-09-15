@@ -1,0 +1,29 @@
+meta {
+  name: Crear investigador
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/api/investigadores
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nombreCompleto": "Ana Torres",
+    "correoInstitucional": "ana.torres@universidad.edu",
+    "grupoInvestigacion": "Inteligencia Artificial"
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.nombreCompleto: eq Ana Torres
+  res.body.grupoInvestigacion: eq Inteligencia Artificial
+}
