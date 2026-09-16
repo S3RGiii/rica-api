@@ -1,4 +1,4 @@
-package rica_api;
+package rica_api.investigadores;
 
 
 public class InvestigadorResponse {
