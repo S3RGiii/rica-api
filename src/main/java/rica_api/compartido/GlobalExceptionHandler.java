@@ -1,10 +1,11 @@
-package rica_api;
+package rica_api.compartido;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import rica_api.investigadores.CorreoDuplicadoException;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;

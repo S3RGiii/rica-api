@@ -1,4 +1,4 @@
-package rica_api;
+package rica_api.plataforma;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

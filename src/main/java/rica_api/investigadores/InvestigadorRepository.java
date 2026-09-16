@@ -1,4 +1,4 @@
-package rica_api;
+package rica_api.investigadores;
 
 import java.util.List;
 import java.util.Optional;

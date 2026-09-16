@@ -1,6 +1,8 @@
-package rica_api;
+package rica_api.publicaciones;
 
 import org.springframework.stereotype.Service;
+import rica_api.investigadores.InvestigadorRepository;
+import rica_api.compartido.RecursoNoEncontradoException;
 
 import java.util.List;
 
@@ -18,16 +20,20 @@ public class PublicacionService {
 
     public Publicacion registrar(Publicacion publicacion) {
         if (!investigadorRepository.existsByCorreoInstitucional(publicacion.getInvestigadorCorreo())) {
-            throw new IllegalArgumentException("El correo del investigador no está registrado.");
+            throw new RecursoNoEncontradoException(
+                    "No existe un investigador con correo " + publicacion.getInvestigadorCorreo());
         }
         return publicacionRepository.save(publicacion);
     }
 
-    public List<Publicacion> listarPorInvestigador(String correo) {
-        return publicacionRepository.findByInvestigadorCorreo(correo);
+    public List<Publicacion> listarPorInvestigador(String investigadorCorreo) {
+        return publicacionRepository.findByInvestigadorCorreo(investigadorCorreo);
     }
 
-    public List<Publicacion> listarTodas() {
-        return publicacionRepository.findAll();
+    public Publicacion buscarPorId(String id) {
+        return publicacionRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "No existe una publicación con id " + id));
     }
+
 }
