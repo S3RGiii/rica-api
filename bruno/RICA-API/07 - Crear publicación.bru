@@ -1,0 +1,29 @@
+meta {
+  name: Crear publicación
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:8080/api/publicaciones
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "titulo": "Publicación de prueba",
+    "tipo": "articulo",
+    "anio": 2026,
+    "investigadorCorreo": "ana.torres@uptc.edu.co"
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.titulo: eq Publicación de prueba
+}

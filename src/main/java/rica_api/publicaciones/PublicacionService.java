@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class PublicacionService {
+public class PublicacionService implements PublicacionUseCase {
 
     private final PublicacionRepository publicacionRepository;
     private final InvestigadorRepository investigadorRepository;
@@ -27,6 +27,7 @@ public class PublicacionService {
         this.eventPublisher = eventPublisher;
     }
 
+    @Override
     public Publicacion registrar(Publicacion publicacion) {
         if (!investigadorRepository.existsByCorreoInstitucionalValor(publicacion.getInvestigadorCorreo())) {
             throw new RecursoNoEncontradoException(
@@ -46,10 +47,12 @@ public class PublicacionService {
         return guardada;
     }
 
+    @Override
     public List<Publicacion> listarPorInvestigador(String investigadorCorreo) {
         return publicacionRepository.findByInvestigadorCorreo(investigadorCorreo);
     }
 
+    @Override
     public Publicacion buscarPorId(String id) {
         return publicacionRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException(

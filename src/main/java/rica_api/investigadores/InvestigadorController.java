@@ -11,28 +11,28 @@ import java.util.List;
 @RequestMapping("/api/investigadores")
 public class InvestigadorController {
 
-    private final InvestigadorService investigadorService;
+    private final InvestigadorUseCase investigadorUseCase;
 
-    public InvestigadorController(InvestigadorService investigadorService) {
-        this.investigadorService = investigadorService;
+    public InvestigadorController(InvestigadorUseCase investigadorUseCase) {
+        this.investigadorUseCase = investigadorUseCase;
     }
 
     @GetMapping
     public List<InvestigadorResponse> listar() {
-        return investigadorService.listarTodos().stream()
+        return investigadorUseCase.listarTodos().stream()
                 .map(InvestigadorMapper::aResponse)
                 .toList();
     }
 
     @GetMapping("/{id}")
     public InvestigadorResponse buscarPorId(@PathVariable Long id) {
-        Investigador investigador = investigadorService.buscarPorId(id);
+        Investigador investigador = investigadorUseCase.buscarPorId(id);
         return InvestigadorMapper.aResponse(investigador);
     }
 
     @PostMapping
     public ResponseEntity<InvestigadorResponse> registrar(@Valid @RequestBody InvestigadorRequest request) {
-        Investigador guardado = investigadorService.registrar(
+        Investigador guardado = investigadorUseCase.registrar(
                 request.getNombreCompleto(),
                 request.getCorreoInstitucional(),
                 request.getGrupoInvestigacion());
