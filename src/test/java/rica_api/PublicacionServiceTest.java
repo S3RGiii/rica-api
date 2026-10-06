@@ -15,6 +15,8 @@ import rica_api.publicaciones.PublicacionRegistrada;
 import rica_api.publicaciones.PublicacionRepository;
 import rica_api.publicaciones.PublicacionService;
 
+import java.time.LocalDate;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -75,6 +77,21 @@ class PublicacionServiceTest {
                 .isInstanceOf(LimitePublicacionesAlcanzadoException.class);
 
         verify(publicacionRepository, never()).save(any(Publicacion.class));
+    }
+
+    @Test
+    void registrarSinAnioUsaElAnioActualParaVerificarElLimite() {
+        when(investigadorRepository.existsByCorreoInstitucionalValor("ana.torres@uptc.edu.co")).thenReturn(true);
+        when(limitePublicacionesAnualesService.alcanzoLimite("ana.torres@uptc.edu.co", LocalDate.now().getYear()))
+                .thenReturn(false);
+        when(publicacionRepository.save(any(Publicacion.class))).thenAnswer(invocacion -> invocacion.getArgument(0));
+
+        Publicacion sinAnio = publicacionDePrueba();
+        sinAnio.setAnio(null);
+
+        publicacionService.registrar(sinAnio);
+
+        verify(limitePublicacionesAnualesService).alcanzoLimite("ana.torres@uptc.edu.co", LocalDate.now().getYear());
     }
 
     private Publicacion publicacionDePrueba() {

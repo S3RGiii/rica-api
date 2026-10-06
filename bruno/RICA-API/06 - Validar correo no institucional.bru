@@ -1,0 +1,28 @@
+meta {
+  name: Validar correo no institucional
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:8080/api/investigadores
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nombreCompleto": "Prueba",
+    "correoInstitucional": "prueba@gmail.com",
+    "grupoInvestigacion": "GIT-UPTC"
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.mensaje: eq El correo institucional debe pertenecer al dominio @uptc.edu.co
+}
