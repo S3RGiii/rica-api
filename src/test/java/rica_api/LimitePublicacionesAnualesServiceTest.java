@@ -41,6 +41,14 @@ class LimitePublicacionesAnualesServiceTest {
         assertThat(limiteService.alcanzoLimite("ana.torres@uptc.edu.co", 2026)).isFalse();
     }
 
+    @Test
+    void ignoraPublicacionesSinAnio() {
+        when(publicacionRepository.findByInvestigadorCorreo("ana.torres@uptc.edu.co"))
+                .thenReturn(List.of(publicacion(null), publicacion(null), publicacion(2026)));
+
+        assertThat(limiteService.alcanzoLimite("ana.torres@uptc.edu.co", 2026)).isFalse();
+    }
+
     private Publicacion publicacion(Integer anio) {
         Publicacion publicacion = new Publicacion();
         publicacion.setAnio(anio);

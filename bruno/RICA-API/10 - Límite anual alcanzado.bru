@@ -1,0 +1,33 @@
+meta {
+  name: Límite anual alcanzado
+  type: http
+  seq: 10
+}
+
+post {
+  url: http://localhost:8080/api/publicaciones
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "titulo": "Publicación de prueba",
+    "tipo": "articulo",
+    "anio": 2026,
+    "investigadorCorreo": "ana.torres@uptc.edu.co"
+  }
+}
+
+assert {
+  res.status: eq 409
+}
+
+docs {
+  El límite es de 3 publicaciones por año (LimitePublicacionesAnualesService).
+  Para ver este 409: ejecuta el request "Crear publicación" tres veces (mismo año) y luego este.
+}
