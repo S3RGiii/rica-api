@@ -10,7 +10,7 @@ import rica_api.compartido.RecursoNoEncontradoException;
 import rica_api.publicaciones.LimitePublicacionesAlcanzadoException;
 import rica_api.publicaciones.Publicacion;
 import rica_api.publicaciones.PublicacionController;
-import rica_api.publicaciones.PublicacionService;
+import rica_api.publicaciones.PublicacionUseCase;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -28,7 +28,7 @@ class PublicacionControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private PublicacionService publicacionService;
+    private PublicacionUseCase publicacionUseCase;
 
     @Test
     void registrarDevuelve201CuandoLaPublicacionSeGuarda() throws Exception {
@@ -37,7 +37,7 @@ class PublicacionControllerTest {
         guardada.setTitulo("Publicación de prueba");
         guardada.setInvestigadorCorreo("ana.torres@uptc.edu.co");
         guardada.setAnio(2026);
-        when(publicacionService.registrar(any(Publicacion.class))).thenReturn(guardada);
+        when(publicacionUseCase.registrar(any(Publicacion.class))).thenReturn(guardada);
 
         mockMvc.perform(post("/api/publicaciones")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -47,7 +47,7 @@ class PublicacionControllerTest {
 
     @Test
     void registrarDevuelve404CuandoElInvestigadorNoExiste() throws Exception {
-        when(publicacionService.registrar(any(Publicacion.class)))
+        when(publicacionUseCase.registrar(any(Publicacion.class)))
                 .thenThrow(new RecursoNoEncontradoException(
                         "No existe un investigador con correo ana.torres@uptc.edu.co"));
 
@@ -59,7 +59,7 @@ class PublicacionControllerTest {
 
     @Test
     void registrarDevuelve409CuandoSeAlcanzoElLimiteAnual() throws Exception {
-        when(publicacionService.registrar(any(Publicacion.class)))
+        when(publicacionUseCase.registrar(any(Publicacion.class)))
                 .thenThrow(new LimitePublicacionesAlcanzadoException(
                         "El investigador alcanzó el límite anual de 3 publicaciones para el año 2026"));
 
