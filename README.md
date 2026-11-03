@@ -1,13 +1,15 @@
 # RICA — Taller L5/L6: microservicios, gRPC y mensajería
 
+> **Rama original L5/L6.** La versión lineal que se integró a `main` es `taller-microservicios-lineal`. L8 está en `taller-l8-cqrs`. Esta rama se conserva como referencia histórica; no es la que se revisa para el PR lineal.
+
 Taller de **Ingeniería de Software II** (UPTC). Esta rama contiene la evolución de `rica-api` desde el monolito hexagonal (L4) hasta dos servicios independientes que se comunican por gRPC y mensajería (L5 + L6).
 
-**Rama:** `taller-microservicios`
-**Commit de referencia:** `3f69c37` (2026-10-20)
-**Base L4:** `taller-hexagonal`, commit `9e2b3c8` (2026-10-06)
+**Rama:** `taller-microservicios` (original)
+**Commit de referencia:** `ffd390a` (2026-10-20; contenido original del taller)
+**Base L4:** `taller-hexagonal`, commit `becb667` (2026-10-06)
 **Remoto:** <https://github.com/S3RGiii/rica-api>
 
-> Las fechas son las reales de los commits. No se reescribieron. Este README se agregó el **2026-11-03** para dejar la evidencia visible.
+> Las fechas son las reales de los commits. Los hashes corresponden a la historia limpia actual; el contenido y las fechas se conservaron. Este README se agregó el **2026-11-03** para dejar la evidencia visible.
 
 ## Módulos y puertos
 
