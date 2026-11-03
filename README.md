@@ -9,6 +9,22 @@ Taller de **Ingeniería de Software II** (UPTC). Esta rama contiene la evolució
 
 > Las fechas son las reales de los commits. No se reescribieron. Este README se agregó el **2026-11-03** para dejar la evidencia visible.
 
+## Ruta del curso (L1–L9)
+
+| Lección | Estado | Dónde |
+|---|---|---|
+| L1 · Fundamentos | Teoría | `Material/Teoria_Ingenieria_de_Software_II.md` |
+| L2 · Estilos clásicos | Teoría | `Material/Teoria_Ingenieria_de_Software_II.md` |
+| L3 · DDD | Hecho | Rama `taller-ddd` |
+| L4 · Hexagonal | Hecho | Rama `taller-hexagonal` |
+| L5 · Microservicios | Hecho | `investigadores-service`, `publicaciones-service` |
+| L6 · Comunicación | Hecho | gRPC, Kafka, Outbox, Saga, Resilience4j, Eureka y Gateway |
+| L7 · ATAM y evolutionary architecture | Teoría | Guía local; no tiene taller de código |
+| L8 · CQRS | **Pendiente** | Taller `consultas-service` sobre estos servicios |
+| L9 · EDA | **Pendiente** | Consumidores robustos, retry/backoff y DLT sobre `consultas-service` |
+
+> El repositorio contiene **código hasta L6**. L7 es teoría; L8 y L9 aún no se implementan. La teoría y la guía interactiva locales sí llegan a L9, pero no viven en este repo.
+
 ## Módulos y puertos
 
 | Módulo | Puerto | Rol |
