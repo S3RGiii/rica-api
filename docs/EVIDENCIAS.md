@@ -1,8 +1,8 @@
 # Evidencias de verificación
 
 **Fecha de las ejecuciones:** 2026-11-03
-**Entorno:** Windows 11 · Java 25.0.4.1 · Maven 3.9.16 (wrapper) · Docker Desktop no estaba iniciado durante la verificación de rica-api.
-**Nota:** las fechas de los commits son las originales; no se reescribieron. Este archivo documenta lo que se ejecutó y lo que falta por infraestructura.
+**Entorno:** Windows 11 · Java 25.0.4.1 · Maven 3.9.16 (wrapper) · Docker Desktop con PostgreSQL 16 y MongoDB 7.
+**Nota:** las fechas de los commits son las originales; no se reescribieron. Este archivo documenta lo que se ejecutó con y sin infraestructura.
 
 ---
 
@@ -11,7 +11,7 @@
 **Commit:** `9e2b3c8` (2026-10-06)
 **Comando:** `.\mvnw.cmd test`
 
-**Resultado:** 31 tests definidos; 28 pasan; 3 errores por infraestructura.
+**Resultado:** **31/31 tests verdes · BUILD SUCCESS** con PostgreSQL y MongoDB levantados.
 
 | Clase | Tests | Resultado |
 |---|---:|---|
@@ -23,18 +23,11 @@
 | `LimitePublicacionesAnualesServiceTest` | 4 | ✅ |
 | `PublicacionControllerTest` | 3 | ✅ |
 | `PublicacionServiceTest` | 4 | ✅ |
-| `InvestigadorRepositoryTest` | 2 | ❌ requieren PostgreSQL |
-| `RicaApiApplicationTests` | 1 | ❌ requiere el contexto con PostgreSQL/MongoDB |
-| **Total** | **31** | **28 ✅ / 3 ❌ por infraestructura** |
+| `InvestigadorRepositoryTest` | 2 | ✅ con PostgreSQL |
+| `RicaApiApplicationTests` | 1 | ✅ con PostgreSQL/MongoDB |
+| **Total** | **31** | **31 ✅ · BUILD SUCCESS** |
 
-**Error observado:**
-
-```text
-Connection to localhost:5432 refused.
-Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
-```
-
-**Cómo completar los 31:**
+**Verificación con infraestructura (2026-11-03):**
 
 ```powershell
 cd proyectos\Clases\rica-api
@@ -42,7 +35,9 @@ docker compose -f docker-compose.yaml up -d
 .\mvnw.cmd test
 ```
 
-Los 3 tests restantes son de integración; no son fallos de lógica. Sin la base, el contexto de Spring no puede inicializar Flyway.
+Salida: `Tests run: 31, Failures: 0, Errors: 0, Skipped: 0` · `BUILD SUCCESS`.
+
+**Sin infraestructura:** 28/31. Los 3 de integración fallan con `Connection to localhost:5432 refused`; no son fallos de lógica: el contexto de Spring no puede inicializar Flyway sin PostgreSQL.
 
 ---
 
