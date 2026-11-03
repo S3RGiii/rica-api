@@ -35,10 +35,9 @@ Levanta PostgreSQL (`localhost:5432`) y MongoDB (`localhost:27017`) con la base 
 
 **Estado medido el 2026-11-03:**
 
-- 31 tests definidos.
-- **28/31 pasan sin infraestructura** (dominio, aplicación y controllers).
-- Los 3 restantes son de integración (`InvestigadorRepositoryTest` ×2 y `RicaApiApplicationTests` ×1) y requieren PostgreSQL/MongoDB levantados. Sin la base, el error es `Connection to localhost:5432 refused`.
-- Con `docker compose up -d`, vuelve a ejecutar `.\mvnw.cmd test` para completar los 31.
+- **31/31 tests verdes con PostgreSQL y MongoDB levantados** (`BUILD SUCCESS`).
+- Comando verificado: `docker compose -f docker-compose.yaml up -d` y luego `.\mvnw.cmd test`.
+- Sin infraestructura, 28/31: los 3 de integración (`InvestigadorRepositoryTest` ×2 y `RicaApiApplicationTests` ×1) fallan con `Connection to localhost:5432 refused`; no son fallos de lógica, el contexto necesita Flyway/PostgreSQL.
 
 ### 3. Aplicación
 
