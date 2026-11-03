@@ -107,6 +107,7 @@ El repo no incluye un compose raíz con Kafka/Eureka/Gateway; solo PostgreSQL y 
 
 ## Documentación
 
+- `docs/L5.md` — paso L5: dos servicios, puerto `VerificadorInvestigador` y adaptador pendiente.
 - `docs/EVIDENCIAS.md` — resultados, comandos y alcance de la verificación.
 - Rama L4: <https://github.com/S3RGiii/rica-api/tree/taller-hexagonal>
 - Teoría del curso: `Material/Teoria_Ingenieria_de_Software_II.md` (L1–L9), fuera del repo.
