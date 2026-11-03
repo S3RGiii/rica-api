@@ -1,82 +1,113 @@
-# RICA — Red de Investigación y Colaboración Académica
+# RICA — Taller L5/L6: microservicios, gRPC y mensajería
 
-API del proyecto de clase de **Ingeniería de Software II** (UPTC). Implementa el dominio de investigadores y publicaciones con DDD, arquitectura hexagonal y persistencia políglota (PostgreSQL + MongoDB).
+Taller de **Ingeniería de Software II** (UPTC). Esta rama contiene la evolución de `rica-api` desde el monolito hexagonal (L4) hasta dos servicios independientes que se comunican por gRPC y mensajería (L5 + L6).
 
-## Mapa de ramas y evidencia
+**Rama:** `taller-microservicios-lineal` (contenido original de `taller-microservicios`)
+**Contenido original:** commit `3f69c37` (2026-10-20)
+**Base L4:** `taller-hexagonal` (código `9e2b3c8`; docs `3771d44`)
+**Remoto:** <https://github.com/S3RGiii/rica-api>
 
-| Rama | Lección | Qué contiene | Evidencia real |
-|---|---|---|---|
-| `main` | Integración | Versión integrada de los talleres | `c60509b` |
-| `taller-ddd` | L3 · DDD | Lenguaje ubicuo, `CorreoInstitucional`, agregado `Investigador`, factory, servicio de límite anual y pruebas | `6200d64`, `66eb02a` (2026-10-06) |
-| `taller-hexagonal` | L4 · Hexagonal | Puertos primarios en investigadores/publicaciones, adaptadores y pruebas | `9e2b3c8` (2026-10-06) |
-| `taller-microservicios` | L5 + L6 | `investigadores-service` y `publicaciones-service`, gRPC, Kafka, Outbox, Saga, Resilience4j, Eureka y Gateway | `3f69c37` (2026-10-20) |
+> Las fechas son las reales de los commits. No se reescribieron. Este README se agregó el **2026-11-03** para dejar la evidencia visible.
 
-> Las fechas de la tabla son las fechas reales de los commits. No se reescribieron ni se alteraron. Este README se agregó el **2026-11-03** para dejar la evidencia visible en el repositorio.
+## Módulos y puertos
 
-La rama `taller-microservicios` está en el mismo remoto:
-<https://github.com/S3RGiii/rica-api/tree/taller-microservicios>
+| Módulo | Puerto | Rol |
+|---|---:|---|
+| `investigadores-service` | 8080 HTTP · 9090 gRPC | Servidor gRPC `ExisteInvestigador`; PostgreSQL + Flyway |
+| `publicaciones-service` | 8081 HTTP | Cliente gRPC; MongoDB; consumidor Kafka |
+| `eureka-server` | 8761 | Registro de servicios |
+| `gateway` | 8000 | Punto único de entrada; rutas `lb://` |
 
-## Cómo verificar
+## Qué se implementó
 
-### 1. Infraestructura
+- **L5:** separación en `investigadores-service` y `publicaciones-service`, cada uno con su base; `PublicacionService` depende del puerto `VerificadorInvestigador`, no de `InvestigadorRepository`.
+- **L6 — gRPC:** `investigador.proto` con `ExisteInvestigador`; servidor `InvestigadorGrpcService`; cliente `VerificadorInvestigadorGrpc` con `InvestigadorGrpcBlockingStub`, deadline de 5 s y Resilience4j Circuit Breaker.
+- **L6 — Kafka/Outbox:** `investigadores.registrados`, `investigadores.en-eliminacion`, `publicaciones.marcadas-huerfanas`; Transactional Outbox en investigadores.
+- **L6 — Saga:** eliminación coreografiada de investigador con publicaciones huérfanas.
+- **L6 — Eureka/Gateway:** registro y rutas por nombre lógico.
+- **L6 — Resiliencia:** `ServicioNoDisponibleException` → HTTP 503 cuando el servidor gRPC no responde.
+
+## Evidencia de pruebas
+
+**Verificado el 2026-11-03:**
+
+| Servicio | Comando | Resultado |
+|---|---|---:|
+| `investigadores-service` | `.\mvnw.cmd test` | 7 tests ✅ |
+| `publicaciones-service` | `.\mvnw.cmd test` | 2 tests ✅ |
+| **Total** | | **9 tests ✅ · BUILD SUCCESS** |
+
+- **Bruno:** 8 requests, incluida `4-eliminar-investigador` (Saga).
+- **gRPC:** no tiene test automático; se verifica con `grpcurl` y Bruno.
+- **L5 local:** el mismo par de servicios sin gRPC dio 9 tests verdes; el detalle está en `docs/EVIDENCIAS.md`.
+
+## Cómo correr el camino gRPC
+
+### 1. Bases
+
+Cada servicio trae su compose; **no levantes los dos a la vez** porque ambos publican 5432/27017.
 
 ```powershell
-cd proyectos\Clases\rica-api
-docker compose -f docker-compose.yaml up -d
+cd investigadores-service
+docker compose up -d
+
+cd ..\publicaciones-service
+docker compose up -d
 ```
 
-Levanta PostgreSQL (`localhost:5432`) y MongoDB (`localhost:27017`) con la base `rica`.
+Si ya tienes un PostgreSQL/MongoDB en 5432/27017, reutilízalos y no levantes otro.
 
-### 2. Pruebas
-
-```powershell
-.\mvnw.cmd test
-```
-
-**Estado medido el 2026-11-03:**
-
-- **31/31 tests verdes con PostgreSQL y MongoDB levantados** (`BUILD SUCCESS`).
-- Comando verificado: `docker compose -f docker-compose.yaml up -d` y luego `.\mvnw.cmd test`.
-- Sin infraestructura, 28/31: los 3 de integración (`InvestigadorRepositoryTest` ×2 y `RicaApiApplicationTests` ×1) fallan con `Connection to localhost:5432 refused`; no son fallos de lógica, el contexto necesita Flyway/PostgreSQL.
-
-### 3. Aplicación
+### 2. Servicios
 
 ```powershell
+cd investigadores-service
+.\mvnw.cmd spring-boot:run
+
+cd ..\publicaciones-service
 .\mvnw.cmd spring-boot:run
 ```
 
-- API en `http://localhost:8080`.
-- `GET /api/investigadores`
-- `POST /api/investigadores`
-- `GET /api/publicaciones?investigadorCorreo=...`
-- `POST /api/publicaciones`
+El servidor gRPC queda en `localhost:9090`; la API de publicaciones en `localhost:8081`.
 
-## Puente L4 → L5 → L6
+### 3. Prueba gRPC
 
-El cambio central de L4 a L6 es una frontera:
+```powershell
+docker run --rm fullstorydev/grpcurl -plaintext host.docker.internal:9090 list
 
-1. **L4:** `PublicacionService` inyecta `InvestigadorRepository` y verifica el investigador contra la misma base.
-2. **L5:** se separan `investigadores-service` y `publicaciones-service`. `PublicacionService` pasa a depender del puerto `VerificadorInvestigador`; el adaptador `VerificadorInvestigadorPendiente` devuelve `true` como marcador.
-3. **L6:** el puerto se implementa con `VerificadorInvestigadorGrpc` y un `InvestigadorGrpcBlockingStub`; `investigadores-service` expone `ExisteInvestigador` por gRPC en el puerto 9090.
+$json = '{"correoInstitucional":"ana@uptc.edu.co"}'
+$json | docker run --rm -i fullstorydev/grpcurl -plaintext -d '@' host.docker.internal:9090 InvestigadorGrpc/ExisteInvestigador
+```
 
-El núcleo de `PublicacionService` no cambia entre L5 y L6: solo cambia el adaptador. Esa es la prueba de que el puerto está bien diseñado.
+**Esperado:** `{"existe": true}` para un investigador registrado; `{}`/`false` para uno inexistente.
 
-## Evidencia de los talleres
+### 4. Prueba end-to-end
 
-- **L5:** 9 tests verdes (7 de investigadores + 2 de publicaciones), 7 requests Bruno. El detalle está en `docs/EVIDENCIAS.md`.
-- **L6:** 9 tests verdes, 8 requests Bruno (incluye la Saga de eliminación). gRPC se prueba manualmente con `grpcurl` y Bruno; no hay test automático del adaptador.
-- El repo L6 no trae un compose raíz de Kafka/Eureka/Gateway; solo PostgreSQL y MongoDB por servicio. Para el gRPC bastan los dos servicios y sus bases.
+```powershell
+curl.exe -X POST http://localhost:8081/api/publicaciones `
+  -H "Content-Type: application/json" `
+  -d "{\"investigadorCorreo\":\"ana@uptc.edu.co\",\"titulo\":\"Arquitectura\",\"anio\":2026}"
+```
 
-## Documentación
+**Esperado:** 201 si el investigador existe; 404 si no; 503 si el servidor gRPC está caído.
 
-- `docs/EVIDENCIAS.md` — resultados de tests, comandos y alcance de cada rama.
-- `Material/Teoria_Ingenieria_de_Software_II.md` — teoría del curso (L1–L9), fuera de este repositorio.
-- `Proyecto-final/CAMINO-RICA-API-A-GRPC.md` — camino detallado L4 → gRPC, fuera de este repositorio.
+## L5 → L6 en una frase
+
+`PublicacionService` no cambia: sigue dependiendo de `VerificadorInvestigador`. En L5 el adaptador es `VerificadorInvestigadorPendiente` (devuelve `true`); en L6 es `VerificadorInvestigadorGrpc`. Ese es el valor del puerto.
+
+## Infraestructura pendiente
+
+El repo no incluye un compose raíz con Kafka/Eureka/Gateway; solo PostgreSQL y MongoDB por servicio. Para el camino gRPC bastan los dos servicios y sus bases. Para Kafka/Outbox/Saga/Eureka/Gateway hay que levantar Kafka y los módulos correspondientes aparte.
 
 ## Stack
 
-- Spring Boot 4.1.1 · Java 21 · Maven Wrapper.
-- PostgreSQL 16 + Flyway (investigadores).
-- MongoDB 7 (publicaciones).
-- Springdoc OpenAPI.
-- La rama `taller-microservicios` usa Java 25 y añade Spring gRPC, Kafka, Resilience4j, Eureka y Gateway.
+- Spring Boot 4.1.1 · Java 25 · Spring Cloud 2025.1.3.
+- Spring gRPC server/client + Protocol Buffers.
+- Kafka · Resilience4j · Eureka · Gateway.
+- PostgreSQL 16 + Flyway · MongoDB 7.
+
+## Documentación
+
+- `docs/L5.md` — paso L5: dos servicios, puerto `VerificadorInvestigador` y adaptador pendiente.
+- `docs/EVIDENCIAS.md` — resultados, comandos y alcance de la verificación.
+- Rama L4: <https://github.com/S3RGiii/rica-api/tree/taller-hexagonal>
+- Teoría del curso: `Material/Teoria_Ingenieria_de_Software_II.md` (L1–L9), fuera del repo.
