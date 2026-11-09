@@ -3,7 +3,7 @@
 Taller de **Ingeniería de Software II** (UPTC). Esta rama contiene la evolución de `rica-api` desde el monolito hexagonal (L4) hasta dos servicios independientes que se comunican por gRPC y mensajería (L5 + L6).
 
 **Rama:** `taller-microservicios-lineal` (contenido original de `taller-microservicios`)
-**Contenido original:** commit `3f69c37` (2026-10-20)
+**Contenido original:** commit `ffd390a` (2026-10-20)
 **Base L4:** `taller-hexagonal` (código `9e2b3c8`; docs `3771d44`)
 **Remoto:** <https://github.com/S3RGiii/rica-api>
 
