@@ -13,10 +13,10 @@
 
 | Servicio | Comando | Resultado |
 |---|---|---:|
-| `investigadores-service` | `.\mvnw.cmd test` | 11 tests ✅ |
+| `investigadores-service` | `.\mvnw.cmd test` | 14 tests ✅ |
 | `publicaciones-service` | `.\mvnw.cmd test` | 7 tests ✅ |
 | `consultas-service` | `.\mvnw.cmd test` | 7 tests ✅ |
-| **Total** | | **25 tests ✅ · BUILD SUCCESS** |
+| **Total** | | **28 tests ✅ · BUILD SUCCESS** |
 
 **Clases:**
 
@@ -158,9 +158,11 @@ En L6 ese adaptador se reemplaza por `VerificadorInvestigadorGrpc`; `Publicacion
 ## 7. Lectura de la evidencia
 
 - **L4:** `taller-hexagonal` `becb667` (código) y `1c7ab7f` (docs), 31 tests definidos (28 sin base + 3 de integración).
-- **L5:** dos servicios, puerto `VerificadorInvestigador`, 9 tests verdes en su momento.
-- **L6:** gRPC + Kafka/Outbox/Saga/Eureka/Gateway, 9 tests verdes; gRPC verificado manualmente.
+- **L5:** dos servicios, puerto `VerificadorInvestigador`, 9 tests verdes en su momento. Auditoría en `NOTAS.md`.
+- **L6:** gRPC + Kafka/Outbox/Saga/Eureka/Gateway, verificado manualmente.
 - **L7:** `docs/ATAM-LITE.md`, cuatro ADR y 6 funciones de aptitud con ArchUnit (`27f0757`).
 - **L8:** `consultas-service` + proyector, integrado en `main` (`46a9f49` vía merge `5b89dda`).
-- **Total actual:** 25 tests verdes (11 + 7 + 7). End-to-end de L8 pendiente de ejecutar.
-- **L9:** no implementado en este repo.
+- **L9:** DLT + backoff + idempotencia en `KafkaErrorHandlingConfig`. Ver `docs/L9-L11.md`.
+- **L10:** Actuator, `CorrelationIdFilter` y correlationId dentro de los eventos.
+- **L11:** Dockerfile multi-etapa en los cinco módulos, `docker-compose.yml` y CI con matriz.
+- **Total actual:** 28 tests verdes (14 + 7 + 7).

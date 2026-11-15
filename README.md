@@ -32,9 +32,11 @@ Todo está integrado en `main`. Las ramas se conservan como historia del taller;
 | L6 · Comunicación | Hecho | gRPC, Kafka, Outbox, Saga, Resilience4j, Eureka y Gateway |
 | L7 · ATAM y evolutionary architecture | Hecho (documentación) | `docs/ATAM-LITE.md`, `docs/adr/` y `ArquitecturaTest` en cada servicio |
 | L8 · CQRS | Hecho | `consultas-service` + proyector de eventos |
-| L9 · EDA | **Pendiente** | Consumidores robustos, retry/backoff y DLT; no implementado en este repo |
+| L9 · EDA | Hecho | DLT + backoff en `KafkaErrorHandlingConfig`; ver `docs/L9-L11.md` |
+| L10 · Observabilidad | Hecho | Actuator, `CorrelationIdFilter` y correlationId dentro de los eventos |
+| L11 · Contenedores y CI | Hecho | Dockerfile multi-etapa, `docker-compose.yml` y matriz en GitHub Actions |
 
-> El repositorio contiene **código hasta L8**. L9 sigue sin implementar; la guía local llega a L9, pero ese código no vive aquí.
+> El repositorio contiene **código hasta L11**. La entrega y la verificación están en [`docs/ENTREGA.md`](docs/ENTREGA.md).
 
 ## Módulos y puertos
 
@@ -42,9 +44,9 @@ Todo está integrado en `main`. Las ramas se conservan como historia del taller;
 |---|---:|---|
 | `investigadores-service` | 8080 HTTP · 9090 gRPC | Servidor gRPC `ExisteInvestigador`; PostgreSQL + Flyway; Outbox |
 | `publicaciones-service` | 8081 HTTP | Cliente gRPC; MongoDB; consumidor Kafka; publica `publicaciones.registradas` |
-| `consultas-service` | 8083 HTTP | **Lado de lectura CQRS**; MongoDB `rica_consultas`; consume 4 eventos |
+| `consultas-service` | 8083 HTTP | **Lado de lectura CQRS**; MongoDB `rica_consultas`; consume 4 eventos; DLT |
 | `eureka-server` | 8761 | Registro de servicios |
-| `gateway` | 8000 | Punto único de entrada; ruta `lb://consultas-service` |
+| `gateway` | 8000 | Punto único de entrada; rutas `lb://` |
 
 ## Qué se implementó
 
@@ -66,14 +68,15 @@ Todo está integrado en `main`. Las ramas se conservan como historia del taller;
 
 | Servicio | Comando | Resultado |
 |---|---|---:|
-| `investigadores-service` | `.\mvnw.cmd test` | 11 tests ✅ |
+| `investigadores-service` | `.\mvnw.cmd test` | 14 tests ✅ |
 | `publicaciones-service` | `.\mvnw.cmd test` | 7 tests ✅ |
 | `consultas-service` | `.\mvnw.cmd test` | 7 tests ✅ |
-| **Total** | | **25 tests ✅ · BUILD SUCCESS** |
+| **Total** | | **28 tests ✅ · BUILD SUCCESS** |
 
 - **Bruno:** 8 requests del camino L5/L6, incluida `4-eliminar-investigador` (Saga).
 - **gRPC:** no tiene test automático; se verifica con `grpcurl` y Bruno.
-- **Alcance:** los 25 tests son de dominio, aplicación y funciones de aptitud. **No** cubren Kafka, MongoDB, Outbox, Saga, gRPC ni la prueba end-to-end de L8; esas piezas se verifican manualmente con la infraestructura levantada.
+- **Alcance:** los 28 tests son de dominio, aplicación y funciones de aptitud. **No** cubren Kafka, MongoDB, Outbox, Saga, gRPC ni la prueba end-to-end de L8; esas piezas se verifican manualmente con la infraestructura levantada.
+- **Informe de verificación:** [`docs/ENTREGA.md`](docs/ENTREGA.md) y [`docs/ENTREGA-informe-talleres.md`](docs/ENTREGA-informe-talleres.md) (60/60 + 10/10 de bonus).
 
 ## Cómo correr el camino L5/L6
 
