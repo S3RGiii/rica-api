@@ -9,7 +9,7 @@
 ```
 TALLERES (individual)
 Repositorio: https://github.com/S3RGiii/rica-api
-Commit del corte: f6a936df35d192002debcf4a1cc4029ea0ecd0ec
+Commit del corte: <pegar aqui la salida de: git rev-parse HEAD>
 Rama o PR por taller:
   Taller 3 (DDD)          -> taller-ddd
   Taller 4 (hexagonal)    -> taller-hexagonal
@@ -20,6 +20,12 @@ Rama o PR por taller:
   Taller 10 (observabilidad) -> main
   Taller 11 (contenedores y CI) -> main
 ```
+
+> **Por qué el hash va en blanco:** ningún archivo del repositorio puede contener
+> el hash del commit que lo incluye — al commitearlo, el hash cambia. El hash del
+> corte se obtiene **después** del último `git push`, con `git rev-parse HEAD`, y
+> es el que se pega en Moodle. Ese mismo hash es el que hay que usar para
+> `git checkout` al verificar.
 
 > Los talleres 3 a 8 se conservan como ramas históricas; su contenido está
 > integrado en `main`, que es lo que se evalúa. Los talleres 9, 10 y 11 se
@@ -35,17 +41,25 @@ Ejecutado con `VerificarTalleres.java` sobre un **clon limpio** del commit del c
 |---|---:|
 | Talleres 3 a 9 (parte automática) | **60 / 60** |
 | Talleres 10 y 11 (bonus) | **10 / 10** |
-| **Huella del informe** | `2dbbdd50ce4a` |
 
 Sin avisos en el informe: no hay cambios sin confirmar y el historial no está
 concentrado en las últimas 48 horas.
 
 El informe completo está en [`docs/ENTREGA-informe-talleres.md`](ENTREGA-informe-talleres.md).
 
-> **Cómo reproducir la huella:** clonar el repositorio, hacer
-> `git checkout f6a936d` y ejecutar
-> `java VerificarTalleres.java` desde la raíz del clon. Dos evaluadores del mismo
-> commit deben obtener `2dbbdd50ce4a`.
+> **Cómo verificar y obtener la huella del commit del corte:**
+>
+> ```
+> git rev-parse HEAD
+> git clone https://github.com/S3RGiii/rica-api.git evaluacion
+> cd evaluacion
+> git checkout <hash obtenido arriba>
+> java VerificarTalleres.java
+> ```
+>
+> La huella se calcula sobre ese commit. Dos evaluadores del mismo commit deben
+> obtener la misma huella. Si difieren, casi siempre es porque uno no está en el
+> commit del corte o el clon tiene cambios sin confirmar.
 
 ---
 
