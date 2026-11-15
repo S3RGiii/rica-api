@@ -1,10 +1,11 @@
 # Evidencias de los talleres L5/L6/L8
 
-**Fecha de las ejecuciones:** 2026-11-03
-**Rama:** `taller-l8-cqrs` (L8 sobre `taller-microservicios-lineal`)
+**Fecha de las ejecuciones:** 2026-11-15
+**Rama:** `main` (L5, L6, L7 y L8 integrados)
 **Base L5/L6:** `44da27b` (contenido) y `3bf5578` (README de ruta)
+**L8:** `46a9f49`, integrado en `main` con el merge `5b89dda`
+**L7:** `27f0757`
 **Entorno:** Windows 11 · Java 25.0.4.1 · Maven 3.9.16 (wrapper)
-**Nota:** las fechas de los commits son las originales; los hashes corresponden a la historia limpia actual.
 
 ---
 
@@ -12,21 +13,36 @@
 
 | Servicio | Comando | Resultado |
 |---|---|---:|
-| `investigadores-service` | `.\mvnw.cmd test` | 8 tests ✅ |
-| `publicaciones-service` | `.\mvnw.cmd test` | 4 tests ✅ |
+| `investigadores-service` | `.\mvnw.cmd test` | 11 tests ✅ |
+| `publicaciones-service` | `.\mvnw.cmd test` | 7 tests ✅ |
 | `consultas-service` | `.\mvnw.cmd test` | 7 tests ✅ |
-| **Total** | | **19 tests ✅ · BUILD SUCCESS** |
+| **Total** | | **25 tests ✅ · BUILD SUCCESS** |
 
 **Clases:**
 
 - `InvestigadorFactoryTest` — 3 tests.
 - `InvestigadorServiceTest` — 5 tests (incluye `confirmarEliminacionBorraAlInvestigadorYPublicaElEventoEliminado`).
+- `ArquitecturaTest` (investigadores, **L7**) — 3 funciones de aptitud con ArchUnit.
 - `LimitePublicacionesAnualesServiceTest` — 2 tests.
 - `PublicacionServiceTest` — 2 tests (evento publicado después de guardar; no se publica si el comando falla).
+- `ArquitecturaTest` (publicaciones, **L7**) — 3 funciones de aptitud con ArchUnit.
 - `FichaInvestigadorTest` — 3 tests (total, idempotencia, ficha nueva).
 - `ProyectorFichasTest` — 4 tests (registro, publicación antes del registro, duplicado, eliminación).
 
-**Alcance:** son tests de dominio/aplicación. **No** cubren el adaptador gRPC, Kafka, MongoDB, Outbox, Saga ni la prueba end-to-end de L8; esas piezas se verifican manualmente.
+### Funciones de aptitud (L7)
+
+Se ejecutan en cada build y fallan si alguien rompe la regla:
+
+| Servicio | Regla | Protege |
+|---|---|---|
+| investigadores | El dominio no depende de la infraestructura | ADR-001 y la regla de L4 |
+| investigadores | La aplicación no depende de la infraestructura | El puerto separa el núcleo del adaptador |
+| investigadores | Los adaptadores de entrada solo hablan con aplicación o dominio | Dirección de dependencias del hexágono |
+| publicaciones | `PublicacionService` no conoce a `VerificadorInvestigadorGrpc` | ADR-002: el puerto aísla la tecnología |
+| publicaciones | Solo el adaptador habla gRPC | El núcleo no se acopla al transporte |
+| publicaciones | Solo el adaptador usa Resilience4j | La resiliencia es del adaptador, no del negocio |
+
+**Alcance:** los tests de dominio/aplicación y las funciones de aptitud no cubren el adaptador gRPC, Kafka, MongoDB, Outbox, Saga ni la prueba end-to-end de L8; esas piezas se verifican manualmente.
 
 ---
 
@@ -142,8 +158,9 @@ En L6 ese adaptador se reemplaza por `VerificadorInvestigadorGrpc`; `Publicacion
 ## 7. Lectura de la evidencia
 
 - **L4:** `taller-hexagonal` `becb667` (código) y `1c7ab7f` (docs), 31 tests definidos (28 sin base + 3 de integración).
-- **L5:** dos servicios, puerto `VerificadorInvestigador`, 9 tests verdes.
+- **L5:** dos servicios, puerto `VerificadorInvestigador`, 9 tests verdes en su momento.
 - **L6:** gRPC + Kafka/Outbox/Saga/Eureka/Gateway, 9 tests verdes; gRPC verificado manualmente.
-- **L8:** `consultas-service` + proyector, 19 tests verdes en total, end-to-end pendiente de ejecutar.
+- **L7:** `docs/ATAM-LITE.md`, cuatro ADR y 6 funciones de aptitud con ArchUnit (`27f0757`).
+- **L8:** `consultas-service` + proyector, integrado en `main` (`46a9f49` vía merge `5b89dda`).
+- **Total actual:** 25 tests verdes (11 + 7 + 7). End-to-end de L8 pendiente de ejecutar.
 - **L9:** no implementado en este repo.
-- **Fechas:** commits del 2026-10-06 y 2026-10-20; no se alteraron.

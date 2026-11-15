@@ -1,6 +1,6 @@
 # 4. CQRS con modelo de lectura separado para la ficha del investigador
 
-Estado: **Propuesta** — diseñado, no integrado en `main`
+Estado: Aceptado — integrado en `main`
 
 ## Contexto
 
@@ -12,14 +12,14 @@ El taller de la Lección 8 construye `consultas-service` —un tercer servicio c
 
 ## Decisión
 
-**Propuesta, todavía no en `main`.** El diseño es CQRS de **nivel 2** (almacenes separados), no Event Sourcing:
+CQRS de **nivel 2** (almacenes separados), no Event Sourcing:
 
 - `consultas-service` mantiene una colección de **fichas desnormalizadas** (`FichaInvestigador`), cada una con el investigador y la lista de sus publicaciones.
 - `ProyeccionListener` consume los tópicos `investigadores.registrados`, `publicaciones.registradas`, `investigadores.en-eliminacion` e `investigadores.eliminados`.
 - `ProyectorFichas` aplica cada evento con tres garantías: **idempotencia** (una publicación no se agrega dos veces, se compara por `id`), **tolerancia al desorden** (crea la ficha parcial y la completa cuando llega el otro evento) y **reconstruibilidad** (el modelo de lectura se puede vaciar y reproducir desde el log de Kafka).
 - `GET /api/consultas/investigadores/{correo}` devuelve la ficha completa en una sola lectura.
 
-El estado actual es una rama `taller-l8-cqrs` con un commit (`46a9f49`) que **no está fusionado en `main`**. Por eso este ADR queda en estado Propuesta.
+Integrado en `main` mediante el merge `5b89dda`, que trae el commit `46a9f49` del taller. Los 7 tests de `consultas-service` pasan.
 
 ## Alternativas descartadas
 
@@ -32,8 +32,6 @@ El estado actual es una rama `taller-l8-cqrs` con un commit (`46a9f49`) que **no
 **Una vista materializada en PostgreSQL.** No es posible sin compartir base entre servicios, lo que viola el ADR-001.
 
 ## Consecuencias
-
-**Si se integra:**
 
 (+) **Una sola lectura devuelve la ficha completa.** Se elimina la unión en memoria y la dependencia de que los servicios de escritura estén arriba para consultar.
 
@@ -55,4 +53,4 @@ El estado actual es una rama `taller-l8-cqrs` con un commit (`46a9f49`) que **no
 
 ## Nota sobre el estado
 
-Este ADR existe para dejar constancia de una decisión **diseñada y no desplegada**. La documentación de la Lección 12 se evalúa tal como está construido el sistema: describir `consultas-service` como si estuviera en `main` sería una inconsistencia verificable con `git log`. Cuando la rama se integre, este documento pasa a Estado: Aceptado y se actualiza el commit de referencia.
+Este ADR se escribió cuando `consultas-service` vivía solo en la rama `taller-l8-cqrs`. El taller de la Lección 8 se integró a `main` el 2026-11-15, así que el estado pasó de **Propuesta** a **Aceptado** y el documento se actualizó en el mismo commit. La documentación de la Lección 12 se evalúa tal como está construido el sistema: por eso el estado del ADR debe coincidir siempre con lo que hay en `main`, y un ADR que describa algo no fusionado debe decirlo explícitamente.

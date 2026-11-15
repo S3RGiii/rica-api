@@ -40,7 +40,7 @@ El contrato es un `.proto` versionado, y el adaptador `VerificadorInvestigadorGr
 
 (−) **El Circuit Breaker está construido a mano en el adaptador**, con `CircuitBreaker.of(...)` en el constructor, en vez de usar la anotación de Resilience4j. Eso lo hace difícil de configurar por propiedad y de reutilizar; es deuda técnica reconocida, no una decisión de diseño.
 
-(−) **gRPC no se prueba automáticamente.** Los 9 tests existentes son de dominio y aplicación; el adaptador se verifica a mano con `grpcurl` y Bruno. Un fallo de integración no lo detecta el build.
+(−) **gRPC no se prueba automáticamente.** Las funciones de aptitud comprueban que el núcleo no se acopla al transporte, pero no que la llamada funcione; el adaptador se verifica a mano con `grpcurl` y Bruno. Un fallo de integración no lo detecta el build.
 
 (−) **Un `.proto` mal versionado rompe el cliente.** gRPC castiga más que REST los cambios incompatibles: no hay margen para "ignorar el campo que sobra".
 

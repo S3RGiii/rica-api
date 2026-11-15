@@ -1,8 +1,8 @@
-# ATAM-lite — rica-api (L5 + L6)
+# ATAM-lite — rica-api (L5 + L6 + L8)
 
 **Fecha:** 2026-11-15
-**Alcance:** `investigadores-service`, `publicaciones-service`, `eureka-server`, `gateway`. Código hasta L6. L7 no tiene taller de código; este documento es su entregable.
-**Estado del que se parte:** 9 tests verdes (7 + 2), verificación manual de gRPC y de la Saga.
+**Alcance:** `investigadores-service`, `publicaciones-service`, `consultas-service`, `eureka-server`, `gateway`. Código hasta L8. L7 no tiene taller de código; este documento es su entregable.
+**Estado del que se parte:** 25 tests verdes (11 + 7 + 7), verificación manual de gRPC y de la Saga.
 
 Este documento aplica el método ATAM en su versión reducida: árbol de utilidad con cinco escenarios, y análisis de los de mayor riesgo con riesgos, no-riesgos, sensibilidades y compromisos.
 
@@ -14,13 +14,13 @@ Cinco atributos de calidad, cada uno con un escenario concreto y su par importan
 
 | Atributo | Escenario | Imp. | Dif. |
 |---|---|:---:|:---:|
-| **Disponibilidad** | Con `investigadores-service` caído, `publicaciones-service` sigue respondiendo a `GET /api/publicaciones` en menos de 1 s y devuelve sus datos de MongoDB. | A | M |
+| **Disponibilidad** | Con `investigadores-service` caído, `GET /api/consultas/investigadores/{correo}` sigue devolviendo la ficha completa desde el modelo de lectura en menos de 1 s. | A | M |
 | **Consistencia** | Al eliminar un investigador con publicaciones, estas quedan marcadas como huérfanas en ≤ 10 s **o** la baja se revierte. Ninguna publicación queda apuntando a un investigador inexistente. | A | A |
-| **Rendimiento** | `GET /api/consultas/investigadores/{correo}` devuelve la ficha con todas sus publicaciones en p95 < 300 ms, sin llamadas entre servicios. | M | A |
+| **Rendimiento** | `GET /api/consultas/investigadores/{correo}` devuelve la ficha con todas sus publicaciones en p95 < 300 ms, **sin llamadas entre servicios** (CQRS nivel 2). | M | A |
 | **Modificabilidad** | Cambiar el adaptador de verificación (gRPC → REST → cualquier otro) exige tocar un solo archivo y no modifica `PublicacionService` ni sus tests. | A | B |
 | **Testabilidad** | Los casos de uso se prueban sin Spring ni base de datos. El build falla si el dominio importa infraestructura. | M | B |
 
-**Lectura del árbol:** el escenario de **consistencia** es el único con importancia alta **y** dificultad alta. Es donde una evaluación ATAM pone primero la lupa, y es el que se analiza en la sección 2.
+**Lectura del árbol:** el escenario de **consistencia** es el único con importancia alta **y** dificultad alta. Es donde una evaluación ATAM pone primero la lupa, y es el que se analiza en la sección 2. Los escenarios de disponibilidad y rendimiento se resolvieron con `consultas-service` (ADR-004).
 
 ---
 
@@ -45,7 +45,7 @@ Cinco atributos de calidad, cada uno con un escenario concreto y su par importan
 | **R2** | **El consumidor no es idempotente.** `PublicacionesMarcadasListener` no registra mensajes procesados; Kafka entrega "al menos una vez". | **Aceptar (por ahora).** El efecto es borrar algo ya borrado, que es idempotente por naturaleza. Se documenta para no reutilizar el patrón en un flujo acumulativo. |
 | **R3** | **La tabla de outbox no se purga.** Crece indefinidamente. | **Mitigar.** Trabajo programado que archive eventos publicados con más de N días. |
 | **R4** | **Head-of-line blocking.** Si un evento no se puede publicar, el poller corta el bucle y todos los siguientes esperan. | **Aceptar.** Es intencional para conservar el orden (ADR-003). Se mitiga con monitoreo del tamaño del outbox pendiente. |
-| **R5** | **`publicaciones-service` publica sin Outbox.** Escritura dual: si cae entre guardar y publicar, el evento se pierde. | **Aceptar.** El modelo de lectura es reconstruible (ADR-004). En producción se usaría Outbox también aquí. |
+| **R5** | **`publicaciones-service` publica sin Outbox.** Escritura dual: si cae entre guardar y publicar, el evento se pierde y `consultas-service` nunca actualiza la ficha. | **Mitigar.** Se acepta porque el modelo de lectura es reconstruible, pero un fallo silencioso deja la ficha desactualizada sin alerta. La acción concreta es mover publicaciones a Outbox, igual que investigadores. |
 | **R6** | **El Circuit Breaker está construido a mano** en el constructor del adaptador, no por configuración. | **Aceptar.** Es deuda técnica reconocida; no afecta la corrección del comportamiento. |
 
 ### Puntos de compromiso
@@ -60,9 +60,11 @@ Cinco atributos de calidad, cada uno con un escenario concreto y su par importan
 
 ## 3. Riesgo que el árbol de utilidad deja al descubierto
 
-El escenario de **rendimiento** (ficha del investigador en p95 < 300 ms) tiene dificultad alta y **no está resuelto** en el código actual: hoy exige dos llamadas y una unión en memoria. El ADR-004 lo aborda, pero está en estado **Propuesta**.
+El escenario de **rendimiento** (ficha del investigador en p95 < 300 ms) ya está resuelto en el código: `consultas-service` responde con una sola lectura sobre una colección desnormalizada, sin llamadas entre servicios (ADR-004, 7 tests).
 
-Esto es exactamente lo que ATAM debe hacer visible: hay un atributo de calidad importante con un enfoque arquitectónico diseñado y no desplegado. La consecuencia honesta es que el escenario **hoy no se cumple**, y así hay que reportarlo.
+Lo que el árbol deja al descubierto ahora es distinto: **el escenario de consistencia sigue sin resolverse** y los dos escenarios con mejor cobertura (disponibilidad y rendimiento) se apoyan en un modelo de lectura que hereda la debilidad del riesgo **R5** — `publicaciones-service` publica sin Outbox, así que un fallo entre guardar y publicar deja la ficha desactualizada sin que nada lo detecte.
+
+Esto es exactamente lo que ATAM debe hacer visible: mejorar un atributo de calidad trasladó presión a otro. La proyección es más rápida y más disponible que la consulta cruzada que reemplazó, pero es **derivada** y su exactitud depende de que todos los eventos lleguen.
 
 ---
 

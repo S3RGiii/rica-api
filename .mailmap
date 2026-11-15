@@ -1,0 +1,5 @@
+# Unifica las dos identidades del mismo autor en el historial.
+# Sin esto, `git shortlog -sne` reporta dos "Nicolás Ruiz" distintos y el
+# ritual de corte lo marca como identidad duplicada.
+
+Nicolás Ruiz <sergio.ruiz01@uptc.edu.co> <120435681+S3RGiii@users.noreply.github.com>

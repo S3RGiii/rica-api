@@ -62,18 +62,18 @@ Todo está integrado en `main`. Las ramas se conservan como historia del taller;
 
 ## Evidencia de pruebas
 
-**Verificado el 2026-11-03:**
+**Verificado el 2026-11-15:**
 
 | Servicio | Comando | Resultado |
 |---|---|---:|
-| `investigadores-service` | `.\mvnw.cmd test` | 8 tests ✅ |
-| `publicaciones-service` | `.\mvnw.cmd test` | 4 tests ✅ |
+| `investigadores-service` | `.\mvnw.cmd test` | 11 tests ✅ |
+| `publicaciones-service` | `.\mvnw.cmd test` | 7 tests ✅ |
 | `consultas-service` | `.\mvnw.cmd test` | 7 tests ✅ |
-| **Total** | | **19 tests ✅ · BUILD SUCCESS** |
+| **Total** | | **25 tests ✅ · BUILD SUCCESS** |
 
 - **Bruno:** 8 requests del camino L5/L6, incluida `4-eliminar-investigador` (Saga).
 - **gRPC:** no tiene test automático; se verifica con `grpcurl` y Bruno.
-- **Alcance:** los 19 tests son de dominio/aplicación. **No** cubren Kafka, MongoDB, Outbox, Saga, gRPC ni la prueba end-to-end de L8; esas piezas se verifican manualmente con la infraestructura levantada.
+- **Alcance:** los 25 tests son de dominio, aplicación y funciones de aptitud. **No** cubren Kafka, MongoDB, Outbox, Saga, gRPC ni la prueba end-to-end de L8; esas piezas se verifican manualmente con la infraestructura levantada.
 
 ## Cómo correr el camino L5/L6
 
