@@ -1,6 +1,7 @@
 package com.rica.publicacionesservice.publicaciones;
 
 import com.rica.publicacionesservice.compartido.RecursoNoEncontradoException;
+import com.rica.publicacionesservice.publicaciones.puertos.VerificadorInvestigador;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

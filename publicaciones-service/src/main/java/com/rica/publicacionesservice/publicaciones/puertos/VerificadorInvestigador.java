@@ -1,4 +1,4 @@
-package com.rica.publicacionesservice.publicaciones;
+package com.rica.publicacionesservice.publicaciones.puertos;
 
 public interface VerificadorInvestigador {
 

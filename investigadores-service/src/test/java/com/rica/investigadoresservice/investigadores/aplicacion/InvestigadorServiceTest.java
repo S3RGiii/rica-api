@@ -4,6 +4,8 @@ import com.rica.investigadoresservice.compartido.RecursoNoEncontradoException;
 import com.rica.investigadoresservice.investigadores.dominio.CorreoDuplicadoException;
 import com.rica.investigadoresservice.investigadores.dominio.CorreoInstitucional;
 import com.rica.investigadoresservice.investigadores.dominio.Investigador;
+import com.rica.investigadoresservice.investigadores.dominio.puertos.PublicadorEventos;
+import com.rica.investigadoresservice.investigadores.dominio.puertos.RepositorioInvestigadores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

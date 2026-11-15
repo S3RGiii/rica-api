@@ -32,4 +32,30 @@ public class TopicosConfig {
         return TopicBuilder.name("publicaciones.registradas").partitions(1).replicas(1).build();
     }
 
+    // Topicos muertos: aqui acaban los eventos que agotaron los reintentos.
+    // Declararlos permite que existan desde el arranque y poder inspeccionarlos.
+    @Bean
+    public NewTopic investigadoresRegistradosDlt() {
+        return TopicBuilder.name("investigadores.registrados" + KafkaErrorHandlingConfig.SUFIJO_DLT)
+                .partitions(1).replicas(1).build();
+    }
+
+    @Bean
+    public NewTopic investigadoresEnEliminacionDlt() {
+        return TopicBuilder.name("investigadores.en-eliminacion" + KafkaErrorHandlingConfig.SUFIJO_DLT)
+                .partitions(1).replicas(1).build();
+    }
+
+    @Bean
+    public NewTopic investigadoresEliminadosDlt() {
+        return TopicBuilder.name("investigadores.eliminados" + KafkaErrorHandlingConfig.SUFIJO_DLT)
+                .partitions(1).replicas(1).build();
+    }
+
+    @Bean
+    public NewTopic publicacionesRegistradasDlt() {
+        return TopicBuilder.name("publicaciones.registradas" + KafkaErrorHandlingConfig.SUFIJO_DLT)
+                .partitions(1).replicas(1).build();
+    }
+
 }

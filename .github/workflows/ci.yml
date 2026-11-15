@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  pruebas:
+    name: Pruebas (${{ matrix.servicio }})
+    runs-on: ubuntu-latest
+    strategy:
+      # Si un servicio falla, los demas siguen: interesa ver el mapa completo.
+      fail-fast: false
+      matrix:
+        servicio:
+          - investigadores-service
+          - publicaciones-service
+          - consultas-service
+          - eureka-server
+          - gateway
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Ejecutar pruebas
+        working-directory: ${{ matrix.servicio }}
+        run: ./mvnw -B test

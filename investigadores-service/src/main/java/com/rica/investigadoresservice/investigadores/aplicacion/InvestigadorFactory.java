@@ -3,6 +3,7 @@ package com.rica.investigadoresservice.investigadores.aplicacion;
 import com.rica.investigadoresservice.investigadores.dominio.CorreoDuplicadoException;
 import com.rica.investigadoresservice.investigadores.dominio.CorreoInstitucional;
 import com.rica.investigadoresservice.investigadores.dominio.Investigador;
+import com.rica.investigadoresservice.investigadores.dominio.puertos.RepositorioInvestigadores;
 import org.springframework.stereotype.Component;
 
 @Component

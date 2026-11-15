@@ -2,6 +2,7 @@ package com.rica.publicacionesservice.publicaciones;
 
 import com.rica.publicacionesservice.grpc.InvestigadorGrpcGrpc.InvestigadorGrpcBlockingStub;
 import com.rica.publicacionesservice.grpc.InvestigadorRequest;
+import com.rica.publicacionesservice.publicaciones.puertos.VerificadorInvestigador;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;

@@ -2,6 +2,7 @@ package com.rica.investigadoresservice.investigadores.aplicacion;
 
 import com.rica.investigadoresservice.investigadores.dominio.CorreoDuplicadoException;
 import com.rica.investigadoresservice.investigadores.dominio.Investigador;
+import com.rica.investigadoresservice.investigadores.dominio.puertos.RepositorioInvestigadores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

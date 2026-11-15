@@ -1,5 +1,6 @@
 package com.rica.publicacionesservice.publicaciones;
 
+import com.rica.publicacionesservice.publicaciones.puertos.VerificadorInvestigador;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

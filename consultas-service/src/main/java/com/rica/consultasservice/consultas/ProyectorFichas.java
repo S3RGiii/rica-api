@@ -2,6 +2,7 @@ package com.rica.consultasservice.consultas;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -31,7 +32,8 @@ public class ProyectorFichas {
         FichaInvestigador ficha = fichaOCrear(correo);
         ficha.registrar(evento.get("nombreCompleto").asString());
         fichaRepository.save(ficha);
-        log.info("Proyección: ficha de {} actualizada (registro)", correo);
+        log.info("Proyección: ficha de {} actualizada (registro) [correlationId={}]",
+                correo, correlationIdDe(evento));
     }
 
     public synchronized void alRegistrarsePublicacion(String mensaje) {
@@ -69,6 +71,21 @@ public class ProyectorFichas {
 
     private FichaInvestigador fichaOCrear(String correo) {
         return fichaRepository.findById(correo).orElseGet(() -> FichaInvestigador.nueva(correo));
+    }
+
+    /**
+     * Recupera el correlationId que el productor dejo dentro del evento y lo pone en el MDC,
+     * de modo que todas las lineas de log de esta proyeccion queden unidas a la traza original.
+     * Devuelve el valor para poder incluirlo en el mensaje.
+     */
+    private String correlationIdDe(JsonNode evento) {
+        JsonNode id = evento.get("correlationId");
+        if (id == null || id.isNull()) {
+            return "-";
+        }
+        String valor = id.asString();
+        MDC.put("correlationId", valor);
+        return valor;
     }
 
 }
