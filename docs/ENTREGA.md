@@ -9,7 +9,7 @@
 ```
 TALLERES (individual)
 Repositorio: https://github.com/S3RGiii/rica-api
-Commit del corte: 1261dd5f6e953a0d1fe6fd729b83f27a664ffdcf
+Commit del corte: f6a936df35d192002debcf4a1cc4029ea0ecd0ec
 Rama o PR por taller:
   Taller 3 (DDD)          -> taller-ddd
   Taller 4 (hexagonal)    -> taller-hexagonal
@@ -35,18 +35,17 @@ Ejecutado con `VerificarTalleres.java` sobre un **clon limpio** del commit del c
 |---|---:|
 | Talleres 3 a 9 (parte automática) | **60 / 60** |
 | Talleres 10 y 11 (bonus) | **10 / 10** |
-| **Huella del informe** | `0048de9cc48a` |
+| **Huella del informe** | `2dbbdd50ce4a` |
 
 Sin avisos en el informe: no hay cambios sin confirmar y el historial no está
 concentrado en las últimas 48 horas.
 
 El informe completo está en [`docs/ENTREGA-informe-talleres.md`](ENTREGA-informe-talleres.md).
 
-> **Nota sobre la huella:** el informe de ese archivo se generó sobre el commit
-> `1261dd5`. Como este documento se agregó después, el hash del commit que se
-> entrega es el que aparece arriba y la huella se recalcula sobre él. Para
-> reproducirla: clonar el repositorio, hacer `git checkout <hash>` y ejecutar
-> `java VerificarTalleres.java`.
+> **Cómo reproducir la huella:** clonar el repositorio, hacer
+> `git checkout f6a936d` y ejecutar
+> `java VerificarTalleres.java` desde la raíz del clon. Dos evaluadores del mismo
+> commit deben obtener `2dbbdd50ce4a`.
 
 ---
 

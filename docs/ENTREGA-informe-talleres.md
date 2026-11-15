@@ -1,9 +1,9 @@
 # Informe de verificacion (talleres)
 
-- Repositorio: eval-talleres
-- Commit: 1261dd5f6e953a0d1fe6fd729b83f27a664ffdcf
-- Rama actual: HEAD (fecha del commit: 2026-11-15T16:52:09-05:00)
-- **Huella del informe: 0048de9cc48a**  (dos evaluadores del mismo commit deben obtener la misma huella)
+- Repositorio: eval2
+- Commit: f6a936df35d192002debcf4a1cc4029ea0ecd0ec
+- Rama actual: HEAD (fecha del commit: 2026-11-15T16:53:47-05:00)
+- **Huella del informe: 2dbbdd50ce4a**  (dos evaluadores del mismo commit deben obtener la misma huella)
 
 ## Talleres 3 a 9 (parte automatica)
 
@@ -52,7 +52,7 @@
 
 | Autor | Commits | Archivos distintos | Lineas + | Lineas - |
 |---|---|---|---|---|
-| Nicolás Ruiz | 22 | 237 | 14026 | 2379 |
+| Nicolás Ruiz | 23 | 259 | 14866 | 2387 |
 
 ## Avisos (no puntuan)
 
