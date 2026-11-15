@@ -1,3 +1,7 @@
 target/
 .idea/
 *.iml
+
+# Informes que genera VerificarTalleres.java / VerificarProyecto.java.
+# No se versionan: describen un commit concreto y quedarian obsoletos.
+informe-verificacion-*.md
