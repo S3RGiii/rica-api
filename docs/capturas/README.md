@@ -56,7 +56,7 @@ modelo de lectura se alimenta por eventos. Es CQRS nivel 2.
 |---|---|---|
 | `l9-01-estadisticas-antes.png` | `GET /api/consultas/estadisticas` → `{"altas": 3}` | `EstadisticasController`, `ContadorAltasService` |
 | `l9-02-estadisticas-despues.png` | El mismo endpoint tras una alta nueva → `{"altas": 4}` | `ContadorAltasListener` (grupo propio) |
-| `l9-03-idempotencia-log.png` | Log del contador: alta registrada y duplicado ignorado | `ContadorAltasService` + `AltaProcesada` (clave única por id de evento) |
+| `l9-03-idempotencia-log.png` | Log del contador registrando cada alta por su id (`id=2`, `id=3`, `id=4`) junto al del proyector actualizando la ficha | `ContadorAltasService` + `AltaProcesada` (clave única por id de evento) |
 | `l9-04-dlt.png` | `kafka-console-consumer` sobre `investigadores.registrados.DLT` mostrando el mensaje venenoso `{esto no es json}` | `KafkaErrorHandlingConfig` (DLT + `ExponentialBackOff`), `TopicosConfig` |
 
 **Qué demuestra:** el par 3 → 4 prueba que el contador procesa eventos reales; la captura de

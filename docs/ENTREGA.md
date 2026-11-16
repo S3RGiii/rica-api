@@ -63,6 +63,27 @@ El informe completo está en [`docs/ENTREGA-informe-talleres.md`](ENTREGA-inform
 
 ---
 
+## Evidencias de ejecución (parte manual)
+
+Las capturas de los talleres 5 a 11 están en [`docs/capturas/`](capturas/), con un
+`README.md` que mapea cada imagen al código de `main`.
+
+| Criterio manual | Evidencia |
+|---|---|
+| **MT1** · talleres 5 y 6 | 11 capturas: servicios corriendo, adaptador pendiente, gRPC con deadline, Saga por Kafka, 503 del circuit breaker |
+| **MT2** · talleres 8 y 9 | Ficha JSON con `totalPublicaciones: 5`, log del proyector, estadísticas **3 → 4**, log del contador, DLT con `{esto no es json}` |
+| **MT3** · respuestas propias | [`docs/RESPUESTAS-L8-L9.md`](RESPUESTAS-L8-L9.md) — citan los valores de la ejecución |
+| **MT4** · historial Git | Un commit por bloque de taller, en orden cronológico |
+
+**Nombres verificables con `grep` dentro de `main`:**
+
+- MT1: `VerificadorInvestigadorGrpc`, `investigadores.en-eliminacion`,
+  `investigadores-service` / `publicaciones-service`
+- MT2: `FichaInvestigador`, `ProyectorFichas`, `investigadores.registrados.DLT`,
+  `/api/consultas/estadisticas`
+
+---
+
 ## Qué hay en el repositorio
 
 | Lección | Entregable | Dónde |
