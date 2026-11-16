@@ -1,0 +1,7 @@
+# Los scripts ejecutados dentro de Linux (Docker) deben ir con LF.
+# Sin esto, un mvnw con CRLF falla en el contenedor con:
+#   /bin/sh: 1: ./mvnw: not found
+mvnw text eol=lf
+*.sh text eol=lf
+Dockerfile text eol=lf
+.dockerignore text eol=lf
