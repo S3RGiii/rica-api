@@ -37,21 +37,77 @@ siguió dependiendo de `VerificadorInvestigador`, y solo cambió el adaptador.
 
 ---
 
-## Nombres verificables para la rúbrica MT1
+## L8 — CQRS: ficha de lectura, proyección y ranking
 
-La rúbrica pide citar un nombre de clase, tópico o servicio que exista en el repositorio.
-Estos tres existen en `main` y se pueden comprobar con `grep`:
+| Captura | Qué muestra | Dónde está el código en `main` |
+|---|---|---|
+| `l8-01-ficha-json.png` | `GET /api/consultas/investigadores/ana.torres@uptc.edu.co` → 200 con `correo`, `nombreCompleto`, `estado`, `totalPublicaciones: 5` y la lista de publicaciones embebida | `ConsultaController`, `ServicioConsultas`, `FichaInvestigador`, `FichaResponse` |
+| `l8-02-proyeccion-log.png` | Log del proyector actualizando la ficha a partir de los eventos de Kafka | `ProyectorFichas`, `ProyeccionListener` |
+| `l8-03-ranking.png` | `GET /api/consultas/ranking?top=3` ordenado por `totalPublicaciones` | `ServicioConsultas.ranking` |
+
+**Qué demuestra:** una sola lectura devuelve datos de dos servicios sin llamarlos, porque el
+modelo de lectura se alimenta por eventos. Es CQRS nivel 2.
+
+---
+
+## L9 — EDA: contador de altas, idempotencia y Dead Letter Topic
+
+| Captura | Qué muestra | Dónde está el código en `main` |
+|---|---|---|
+| `l9-01-estadisticas-antes.png` | `GET /api/consultas/estadisticas` → `{"altas": 3}` | `EstadisticasController`, `ContadorAltasService` |
+| `l9-02-estadisticas-despues.png` | El mismo endpoint tras una alta nueva → `{"altas": 4}` | `ContadorAltasListener` (grupo propio) |
+| `l9-03-idempotencia-log.png` | Log del contador: alta registrada y duplicado ignorado | `ContadorAltasService` + `AltaProcesada` (clave única por id de evento) |
+| `l9-04-dlt.png` | `kafka-console-consumer` sobre `investigadores.registrados.DLT` mostrando el mensaje venenoso `{esto no es json}` | `KafkaErrorHandlingConfig` (DLT + `ExponentialBackOff`), `TopicosConfig` |
+
+**Qué demuestra:** el par 3 → 4 prueba que el contador procesa eventos reales; la captura de
+idempotencia prueba que un duplicado no infla el total; la DLT prueba que un mensaje que no se
+puede procesar **no se pierde ni bloquea la partición**.
+
+---
+
+## L10 — Observabilidad
+
+| Captura | Qué muestra | Dónde está el código en `main` |
+|---|---|---|
+| `l10-01-actuator.png` | `/actuator/health` respondiendo `UP` | `spring-boot-starter-actuator` en el `pom.xml` |
+| `l10-02-correlationid.png` | Log con `correlationId=<uuid>` en la línea | `CorrelationIdFilter`, patrón en `application.yml`, `OutboxPublicadorEventos` |
+
+---
+
+## L11 — Contenedores y CI
+
+| Captura | Qué muestra | Dónde está el código en `main` |
+|---|---|---|
+| `l11-01-docker-ps.png` | Contenedores de infraestructura corriendo | `docker-compose.yml` raíz |
+| `l11-02-ci.png` | Workflow `CI` en verde (run #11, commit `ef92b71`), matriz sobre 5 servicios | `.github/workflows/ci.yml` |
+
+---
+
+## Nombres verificables para la rúbrica MT1 y MT2
+
+La rúbrica pide citar un nombre de clase, tópico, servicio o valor que exista en el
+repositorio. Estos se comprueban con `grep` dentro de `main`:
+
+**Para MT1 (talleres 5 y 6):**
 
 1. **`VerificadorInvestigadorGrpc`** — clase en `publicaciones-service`
 2. **`investigadores.en-eliminacion`** — tópico en `investigadores-service`
 3. **`investigadores-service`** / **`publicaciones-service`** — módulos Maven en la raíz
 
+**Para MT2 (talleres 8 y 9):**
+
+1. **`FichaInvestigador`** / `totalPublicaciones` — el JSON de la ficha
+2. **`ProyectorFichas`** — el log de la proyección
+3. **`investigadores.registrados.DLT`** y `KafkaErrorHandlingConfig` — la salida de la DLT
+4. **`/api/consultas/estadisticas`** con `"altas"` — el valor antes (3) y después (4)
+
 ---
 
 ## Nota de coherencia
 
-Las capturas se tomaron ejecutando la rama `taller-microservicios`, que es el contenido
-histórico L5/L6 del que derivó `main`. El código mostrado en las capturas coincide con el de
-`main` salvo por un detalle: `main` movió los puertos a `dominio/puertos` y
-`publicaciones/puertos` (refactor del taller L4/L7). Los nombres de clase, tópicos y servicios
-citados arriba se conservan.
+Las capturas de L5 y L6 se tomaron ejecutando la rama `taller-microservicios`, que es el
+contenido histórico del que derivó `main`. El código mostrado coincide con el de `main` salvo
+por un detalle: `main` movió los puertos a `dominio/puertos` y `publicaciones/puertos`
+(refactor de L4/L7). Los nombres citados arriba se conservan.
+
+Las capturas de L8, L9, L10 y L11 se tomaron directamente sobre `main`.
