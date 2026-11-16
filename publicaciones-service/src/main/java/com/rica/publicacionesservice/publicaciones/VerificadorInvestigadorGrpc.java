@@ -41,9 +41,11 @@ public class VerificadorInvestigadorGrpc implements VerificadorInvestigador {
                 var request = InvestigadorRequest.newBuilder()
                         .setCorreoInstitucional(correoInstitucional)
                         .build();
-                return stub.withDeadlineAfter(5, TimeUnit.SECONDS)
+                boolean existe = stub.withDeadlineAfter(5, TimeUnit.SECONDS)
                         .existeInvestigador(request)
                         .getExiste();
+                log.info("gRPC ExisteInvestigador({}) -> {}", correoInstitucional, existe);
+                return existe;
             });
         } catch (CallNotPermittedException e) {
             log.warn("Circuit Breaker ABIERTO: se rechaza la llamada sin intentar la red");
