@@ -45,7 +45,11 @@ Ejecutado con `VerificarTalleres.java` sobre un **clon limpio** del commit del c
 Sin avisos en el informe: no hay cambios sin confirmar y el historial no está
 concentrado en las últimas 48 horas.
 
-El informe completo está en [`docs/ENTREGA-informe-talleres.md`](ENTREGA-informe-talleres.md).
+> **El informe `.md` con la huella no vive en el repositorio.** La huella se calcula
+> sobre el hash del commit, y añadir el informe cambia ese hash: un archivo no puede
+> contener la huella de su propio commit. El informe generado se entrega **junto al
+> hash**, fuera del repositorio (en el enlace de entrega), y se reproduce con el
+> comando de abajo sobre un clon limpio.
 
 > **Cómo verificar y obtener la huella del commit del corte:**
 >
@@ -103,10 +107,10 @@ Las capturas de los talleres 5 a 11 están en [`docs/capturas/`](capturas/), con
 ## Verificación
 
 ```
-28 tests verdes
+31 tests verdes
   14 en investigadores-service
    7 en publicaciones-service
-   7 en consultas-service
+  10 en consultas-service
 
 6 funciones de aptitud con ArchUnit (se ejecutan en cada build)
 ```

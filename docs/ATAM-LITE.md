@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-11-15
 **Alcance:** `investigadores-service`, `publicaciones-service`, `consultas-service`, `eureka-server`, `gateway`. Código hasta L8. L7 no tiene taller de código; este documento es su entregable.
-**Estado del que se parte:** 25 tests verdes (11 + 7 + 7), verificación manual de gRPC y de la Saga.
+**Estado del que se parte:** 31 tests verdes (14 + 7 + 10), verificación manual de gRPC y de la Saga.
 
 Este documento aplica el método ATAM en su versión reducida: árbol de utilidad con cinco escenarios, y análisis de los de mayor riesgo con riesgos, no-riesgos, sensibilidades y compromisos.
 

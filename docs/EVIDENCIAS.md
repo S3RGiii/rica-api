@@ -15,8 +15,8 @@
 |---|---|---:|
 | `investigadores-service` | `.\mvnw.cmd test` | 14 tests ✅ |
 | `publicaciones-service` | `.\mvnw.cmd test` | 7 tests ✅ |
-| `consultas-service` | `.\mvnw.cmd test` | 7 tests ✅ |
-| **Total** | | **28 tests ✅ · BUILD SUCCESS** |
+| `consultas-service` | `.\mvnw.cmd test` | 10 tests ✅ |
+| **Total** | | **31 tests ✅ · BUILD SUCCESS** |
 
 **Clases:**
 
@@ -165,4 +165,4 @@ En L6 ese adaptador se reemplaza por `VerificadorInvestigadorGrpc`; `Publicacion
 - **L9:** DLT + backoff + idempotencia en `KafkaErrorHandlingConfig`. Ver `docs/L9-L11.md`.
 - **L10:** Actuator, `CorrelationIdFilter` y correlationId dentro de los eventos.
 - **L11:** Dockerfile multi-etapa en los cinco módulos, `docker-compose.yml` y CI con matriz.
-- **Total actual:** 28 tests verdes (14 + 7 + 7).
+- **Total actual:** 31 tests verdes (14 + 7 + 10).

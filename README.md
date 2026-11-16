@@ -70,13 +70,13 @@ Todo está integrado en `main`. Las ramas se conservan como historia del taller;
 |---|---|---:|
 | `investigadores-service` | `.\mvnw.cmd test` | 14 tests ✅ |
 | `publicaciones-service` | `.\mvnw.cmd test` | 7 tests ✅ |
-| `consultas-service` | `.\mvnw.cmd test` | 7 tests ✅ |
-| **Total** | | **28 tests ✅ · BUILD SUCCESS** |
+| `consultas-service` | `.\mvnw.cmd test` | 10 tests ✅ |
+| **Total** | | **31 tests ✅ · BUILD SUCCESS** |
 
 - **Bruno:** 8 requests del camino L5/L6, incluida `4-eliminar-investigador` (Saga).
 - **gRPC:** no tiene test automático; se verifica con `grpcurl` y Bruno.
-- **Alcance:** los 28 tests son de dominio, aplicación y funciones de aptitud. **No** cubren Kafka, MongoDB, Outbox, Saga, gRPC ni la prueba end-to-end de L8; esas piezas se verifican manualmente con la infraestructura levantada.
-- **Informe de verificación:** [`docs/ENTREGA.md`](docs/ENTREGA.md) y [`docs/ENTREGA-informe-talleres.md`](docs/ENTREGA-informe-talleres.md) (60/60 + 10/10 de bonus).
+- **Alcance:** los 31 tests son de dominio, aplicación y funciones de aptitud. **No** cubren Kafka, MongoDB, Outbox, Saga, gRPC ni la prueba end-to-end de L8; esas piezas se verifican manualmente con la infraestructura levantada.
+- **Entrega y verificación:** [`docs/ENTREGA.md`](docs/ENTREGA.md) (60/60 + 10/10 de bonus, evidencias y cómo reproducir la huella).
 
 ## Cómo correr el camino L5/L6
 

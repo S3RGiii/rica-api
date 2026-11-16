@@ -3,7 +3,7 @@
 **Nicolás Ruiz · Ingeniería de Software II · 2026-11-15**
 
 Las respuestas citan valores que salieron en **mi** ejecución del sistema, y que están
-visibles en las capturas de [`docs/capturas/`](../capturas/). Cada valor se puede contrastar
+visibles en las capturas de [`docs/capturas/`](capturas/). Cada valor se puede contrastar
 con la imagen correspondiente.
 
 ---
